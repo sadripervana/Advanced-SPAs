@@ -1,0 +1,45 @@
+// eslint.config.js
+import {
+    defineConfig
+} from "eslint/config";
+
+export default defineConfig([{
+    settings: {
+        sharedData: "Hello", // Custom settings that can be accessed by the plugin
+    },
+    plugins: {
+        customPlugin: {
+            rules: {
+                "my-rule": {
+                    meta: {
+                        // Custom rule's meta information (description, etc.)
+                        docs: {
+                            description: "A custom rule example",
+                            category: "Best Practices",
+                            recommended: true,
+                        },
+                    },
+                    create(context) {
+                        const sharedData = context.settings.sharedData;
+                        console.log("Custom rule triggered with sharedData:", sharedData); // Debugging line
+                        // Define custom rule logic here
+                        return {
+                            "Identifier"(node) {
+                                if (node.name === sharedData) {
+                                    context.report({
+                                        node,
+                                        message: `Identifier name should not be '${sharedData}'`,
+                                    });
+                                }
+                            },
+                        };
+                    },
+                },
+            },
+        },
+    },
+    rules: {
+        "customPlugin/my-rule": "error", // Enabling the custom rule
+        "no-unused-vars": "warn", // Catch unused variables
+    },
+}, ]);
