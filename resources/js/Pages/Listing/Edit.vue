@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="create">
+    <form @submit.prevent="update">
         <div>
          <label>Beds</label>
          <input v-model.number="form.beds" type="text" />
@@ -65,23 +65,27 @@
        </div>
 
        <div></div>
-         <button type="submit">Create</button>
+         <button type="submit">Edit</button>
     </form>
   </template>
 
   <script setup>
-  import { useForm } from '@inertiajs/vue3'
-  const form = useForm({
-    beds: 0,
-    baths: 0,
-    area: 0,
-    city: null,
-    street: null,
-    code: null,
-    street_nr: null,
-    price: 0,
+  import { useForm } from '@inertiajs/vue3';
+import { route } from 'ziggy-js';
+  const props = defineProps({
+    listing:Object
   })
-  const create = () => form.post(route('listing.store'))
+  const form = useForm({
+    beds: props.listing.beds,
+    baths: props.listing.baths,
+    area: props.listing.area,
+    city: props.listing.city,
+    code: props.listing.code,
+    street: props.listing.street,
+    street_nr: props.listing.street_nr,
+    price: props.listing.price,
+  });
+  const update = () => form.put(route('listing.update', {listing: props.listing.id}));
   </script>
 
   <style scoped>

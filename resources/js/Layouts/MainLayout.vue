@@ -8,6 +8,9 @@
         <Link rel="stylesheet" href="listing/create">create</Link>
         <br>
         <Link rel="stylesheet" href="listing">Listing</Link>
+        <div v-if="flashSuccess" class="success">
+            <p>{{ flashSuccess }}</p>
+        </div>
         <slot >
             <p>Default content</p>
         </slot>
@@ -23,9 +26,19 @@
 defineProps({
     message: String,
 });
-// import { ref } from 'vue';
-// const counter = ref(0); // Fixed the typo here
-// setInterval(() => counter.value++, 1000);
+import { computed } from 'vue';
+import { Link, usePage } from '@inertiajs/vue3';
+const page = usePage();
 
-import { Link } from '@inertiajs/vue3';
+const flashSuccess = computed(() => {
+    return page.props.flash.success;
+});
 </script>
+<style>
+.success {
+    background-color: green;
+    color: white;
+    padding: 10px;
+    margin-top: 10px;
+}
+</style>
