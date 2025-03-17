@@ -1,26 +1,33 @@
 <template>
-    <div>
-        Hello!
-        <Link rel="stylesheet" href="/">Home</Link>
-        <br>
-        <Link rel="stylesheet" href="/show">show</Link>
-        <br>
-        <Link rel="stylesheet" href="listing/create">create</Link>
-        <br>
-        <Link rel="stylesheet" href="listing">Listing</Link>
-        <div v-if="flashSuccess" class="success">
-            <p>{{ flashSuccess }}</p>
+    <header class="border-b border-gray-200 dark:border-gray-600 dark:bg-gray-900 bg-white w-full">
+        <div class="container mx-auto">
+            <nav class=" flex items-center justify-between p-4">
+                <div class="text-lg">
+                    <Link :href="route('listing.index')" class="font-bold">Listings</Link>
+                </div>
+                <div class="text-xl text-indigo-600 dark:text-indigo-400">
+                    <Link :href="route('listing.index')">LaraZillo</Link>
+                </div>
+                <div>
+                    <Link :href="route('listing.create')"
+                        class="btn-primary"> + New Listing
+                    </Link>
+                </div>
+            </nav>
         </div>
+    </header>
+    <main class="container mx-auto p-4">
+            <div v-if="flashSuccess" class="mb-4 border rounded-md p-4 bg-green-100 text-green-800 shadow-sm" >
+                <p>{{ flashSuccess }}</p>
+            </div>
         <slot >
             <p>Default content</p>
         </slot>
         <div>
             <p>{{ message }}</p>
-            <!-- <div>
-                The page with the timer is here: {{ counter }}
-            </div> -->
         </div>
-    </div>
+        </main>
+
 </template>
 <script setup>
 defineProps({
@@ -34,11 +41,3 @@ const flashSuccess = computed(() => {
     return page.props.flash.success;
 });
 </script>
-<style>
-.success {
-    background-color: green;
-    color: white;
-    padding: 10px;
-    margin-top: 10px;
-}
-</style>
