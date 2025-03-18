@@ -4,9 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Listing;
+use Auth;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controller; //important for the construct method to work
 
 class ListingController extends Controller
 {
+    use AuthorizesRequests;
+
+    public function __construct()
+    {
+        $this->authorizeResource(Listing::class, 'listing');
+    }
 
     public function index()
     {
@@ -20,6 +29,7 @@ class ListingController extends Controller
      */
     public function create()
     {
+        // $this->authorize('create', Listing::class);
         return inertia('Listing/Create');
     }
 
@@ -28,7 +38,7 @@ class ListingController extends Controller
      */
     public function store(Request $request)
     {
-        Listing::create($request->validate([
+        $request->user()->listings()->create($request->validate([
                 'beds' => 'required|integer|min:0|max:20',
                 'baths' => 'required|integer|min:0|max:20',
                 'price' => 'required|numeric|min:0|max:20000000',
@@ -49,6 +59,12 @@ class ListingController extends Controller
      */
     public function show(Listing  $listing)
     {
+        // if(Auth::user()->cannot('view', $listing)){
+        //     return redirect()->route('listing.index')->with('error', 'You are not allowed to view this listing.');
+        // }
+
+        // $this->authorize('view', $listing);
+
         return inertia('Listing/Show',[
             'listing' => $listing
         ]);

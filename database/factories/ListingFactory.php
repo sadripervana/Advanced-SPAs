@@ -19,9 +19,9 @@ class ListingFactory extends Factory
         return [
             'beds' => $this->faker->numberBetween(1, 5),
             'baths' => $this->faker->numberBetween(1, 5),
-            'area' => $this->faker->numberBetween(50, 500),
+            'area' => $this->faker->numberBetween(50, 255),
             'city' => $this->faker->city,
-            'code' => $this->faker->postcode,
+            'code' => $this->faker->numberBetween(1000, 5000),
             'street' => $this->faker->streetName,
             'street_nr' => $this->faker->buildingNumber,
             'price' => $this->faker->numberBetween(10000, 1000000),

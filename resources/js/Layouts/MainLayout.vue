@@ -28,6 +28,9 @@
         <div v-if="flashSuccess" class="mb-4 border rounded-md p-4 bg-green-100 text-green-800 shadow-sm">
             <p>{{ flashSuccess }}</p>
         </div>
+        <div v-if="flashError" class="mb-4 border rounded-md p-4 bg-red-100 text-red-800 shadow-sm">
+            <p>{{ flashError }}</p>
+        </div>
         <slot>
             <p>Default content</p>
         </slot>
@@ -47,6 +50,10 @@ const page = usePage();
 
 const flashSuccess = computed(() => {
     return page.props.flash.success;
+});
+
+const flashError = computed(() => {
+    return page.props.flash.error;
 });
 
 const user = computed(() => {
