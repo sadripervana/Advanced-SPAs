@@ -17,11 +17,27 @@ class ListingController extends Controller
         $this->authorizeResource(Listing::class, 'listing');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return inertia('Listing/Index',[
-            'listings' => Listing::all()
+        $filters = $request->only([
+            'priceFrom',
+            'priceTo',
+            'beds',
+            'baths',
+            'areaFrom',
+            'areaTo'
         ]);
+
+        return inertia(
+            'Listing/Index',
+            [
+                'filters' => $filters,
+                'listings' => Listing::mostRecent()
+                    ->filter($filters)
+                    ->paginate(10)
+                    ->withQueryString()
+            ]
+        );
     }
 
     /**
@@ -38,7 +54,8 @@ class ListingController extends Controller
      */
     public function store(Request $request)
     {
-        $request->user()->listings()->create($request->validate([
+        $request->user()->listings()->create(
+            $request->validate([
                 'beds' => 'required|integer|min:0|max:20',
                 'baths' => 'required|integer|min:0|max:20',
                 'price' => 'required|numeric|min:0|max:20000000',
@@ -51,7 +68,6 @@ class ListingController extends Controller
             ])
         );
         return redirect()->route('listing.index')->with('success', 'Listing created successfully.');
-
     }
 
     /**
@@ -65,17 +81,19 @@ class ListingController extends Controller
 
         // $this->authorize('view', $listing);
 
-        return inertia('Listing/Show',[
+        return inertia('Listing/Show', [
             'listing' => $listing
         ]);
     }
 
     public function edit(Listing $listing)
     {
-        return inertia('Listing/Edit',
-        [
-            'listing' => $listing
-        ]);
+        return inertia(
+            'Listing/Edit',
+            [
+                'listing' => $listing
+            ]
+        );
     }
 
     /**
@@ -83,19 +101,20 @@ class ListingController extends Controller
      */
     public function update(Request $request, Listing $listing)
     {
-        $listing->update($request->validate([
-            'beds' => 'required|integer|min:0|max:20',
-            'baths' => 'required|integer|min:0|max:20',
-            'price' => 'required|numeric|min:0|max:20000000',
-            'area' => 'required|integer|min:15|max:255',
-            'city' => 'required|string|max:255',
-            'street_nr' => 'required|min:1|max:1000',
-            'street' => 'required|string|max:255',
-            'code' => 'required|integer|min:1000|max:9999',
+        $listing->update(
+            $request->validate([
+                'beds' => 'required|integer|min:0|max:20',
+                'baths' => 'required|integer|min:0|max:20',
+                'price' => 'required|numeric|min:0|max:20000000',
+                'area' => 'required|integer|min:15|max:255',
+                'city' => 'required|string|max:255',
+                'street_nr' => 'required|min:1|max:1000',
+                'street' => 'required|string|max:255',
+                'code' => 'required|integer|min:1000|max:9999',
 
-        ])
-    );
-    return redirect()->route('listing.index')->with('success', 'Listing was changed successfully.');
+            ])
+        );
+        return redirect()->route('listing.index')->with('success', 'Listing was changed successfully.');
     }
 
     /**
