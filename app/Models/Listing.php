@@ -5,14 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\User;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Listing extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = ['beds', 'baths', 'area', 'city', 'code', 'street', 'street_nr', 'price'];
-
+    protected $sortable = [
+        'price', 'created_at'
+    ];
     public function owner()
     {
         return $this->belongsTo(User::class, 'by_user_id');
@@ -43,6 +45,15 @@ class Listing extends Model
         )->when(
             $filters['areaTo'] ?? false,
             fn($query, $value) => $query->where('area', '<=', $value)
+        )->when(
+            $filters['deleted'] ?? false,
+            fn($query, $value) => $query->withTrashed()
+        )->when(
+            $filters['by'] ?? false,
+            fn($query, $value) =>
+            !in_array($value, $this->sortable)
+                ? $query :
+                $query->orderBy($value, $filters['order'] ?? 'desc')
         );
     }
 }
