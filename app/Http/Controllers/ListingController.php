@@ -2,23 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Listing;
-use Auth;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Routing\Controller; //important for the construct method to work
+use Gate;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class ListingController extends Controller
 {
-    use AuthorizesRequests;
+    // public function __construct()
+    // {
+    //     $this->authorizeResource(
+    //         Listing::class,
+    //         'listing'
+    //     );
+    // }
 
-    public function __construct()
+    public function index(Request $request): Response
     {
-        $this->authorizeResource(Listing::class, 'listing');
-    }
-
-    public function index(Request $request)
-    {
+        Gate::authorize(
+            'viewAny',
+            Listing::class
+        );
         $filters = $request->only([
             'priceFrom',
             'priceTo',
@@ -28,36 +34,35 @@ class ListingController extends Controller
             'areaTo'
         ]);
 
-        return inertia(
+        return Inertia::render(
             'Listing/Index',
             [
                 'filters' => $filters,
                 'listings' => Listing::mostRecent()
                     ->filter($filters)
+                    ->withoutSold()
                     ->paginate(10)
                     ->withQueryString()
             ]
         );
     }
 
-
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Listing  $listing)
+    public function show(Listing $listing): Response
     {
-        // if(Auth::user()->cannot('view', $listing)){
-        //     return redirect()->route('listing.index')->with('error', 'You are not allowed to view this listing.');
-        // }
+        // Gate::authorize(
+        //     'view',
+        //     $listing
+        // );
+        $listing->load(['images']);
+        // $offer = !Auth::user() ?
+        //     null : $listing->offers()->byMe()->first();
 
-        // $this->authorize('view', $listing);
-
-        return inertia('Listing/Show', [
-            'listing' => $listing
-        ]);
+        return Inertia::render(
+            'Listing/Show',
+            [
+                'listing' => $listing,
+                // 'offerMade' => $offer
+            ]
+        );
     }
-
-
-
 }

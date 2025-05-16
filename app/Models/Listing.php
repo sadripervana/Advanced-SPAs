@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Listing extends Model
 {
@@ -13,11 +15,17 @@ class Listing extends Model
 
     protected $fillable = ['beds', 'baths', 'area', 'city', 'code', 'street', 'street_nr', 'price'];
     protected $sortable = [
-        'price', 'created_at'
+        'price',
+        'created_at'
     ];
-    public function owner()
+
+    public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'by_user_id');
+    }
+
+    public function images(): HasMany{
+        return $this->hasMany(ListingImage::class);
     }
 
     public function scopeMostRecent($query)
