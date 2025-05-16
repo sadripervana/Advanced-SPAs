@@ -11,7 +11,6 @@
                     <div class="xl:flex items-center gap-2">
                         <Price :price="listing.price" class="text-2xl  font-medium" />
                         <ListingSpace :listing="listing" />
-
                     </div>
                     <ListingAddress :listing="listing" class=" text-gray-500" />
                 </div>
