@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
-
 class ListingController extends Controller
 {
     // public function __construct()
@@ -49,19 +48,19 @@ class ListingController extends Controller
 
     public function show(Listing $listing): Response
     {
-        // Gate::authorize(
-        //     'view',
-        //     $listing
-        // );
+        Gate::authorize(
+            'view',
+            $listing
+        );
         $listing->load(['images']);
-        // $offer = !Auth::user() ?
-        //     null : $listing->offers()->byMe()->first();
+        $offer = !Auth::user() ?
+            null : $listing->offers()->byMe()->first();
 
         return Inertia::render(
             'Listing/Show',
             [
                 'listing' => $listing,
-                // 'offerMade' => $offer
+                'offerMade' => $offer
             ]
         );
     }
