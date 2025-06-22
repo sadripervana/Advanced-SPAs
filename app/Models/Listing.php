@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\ListingImage;
+use App\Models\Offer;
 
 class Listing extends Model
 {
@@ -26,6 +28,11 @@ class Listing extends Model
 
     public function images(): HasMany{
         return $this->hasMany(ListingImage::class);
+    }
+
+    public function offers(): HasMany
+    {
+        return $this->hasMany(Offer::class, 'listing_id');
     }
 
     public function scopeMostRecent($query)
