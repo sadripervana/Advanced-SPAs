@@ -6,7 +6,7 @@
 
     <div v-if="listings.data.length" class="w-full flex justify-center mt-4 mb-4">
         <!-- <Pagination :links="listings.links" /> -->
-        <Pagination :links="links.filter(link => link.url)" />
+        <Pagination :links="listings.links.filter(link => link.url)" />
     </div>
 
 </template>
